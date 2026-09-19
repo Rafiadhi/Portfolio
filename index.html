@@ -1,0 +1,320 @@
+<!- ============================================================
+     PORTOFOLIO — INDEX.HTML (UPGRADED)
+     Paste ke panel HTML di CodePen.  
+     ============================================================ -->
+
+<!-- FILM GRAIN (SVG turbulence, di-refresh oleh JS untuk efek flicker halus) -->
+<svg id="grainSvg" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9998;opacity:.05;mix-blend-mode:overlay;">
+  <filter id="grainFilter">
+    <feTurbulence id="grainTurb" type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grainFilter)"/>
+</svg>
+
+<!-- MASK LINGKARAN "NOISE" — dipakai di gambar overlay Halaman 1, supaya
+     tepi bulatan yang mengikuti kursor tidak rapi/lurus tapi kasar &
+     bertekstur (seperti sobekan/noise), bukan lingkaran mulus biasa. -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="noisyEdgeFilter" x="-60%" y="-60%" width="220%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <mask id="cursorNoiseMask" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="9000" height="9000">
+      <rect x="-3000" y="-3000" width="9000" height="9000" fill="black"/>
+      <circle id="cursorMaskCircle" cx="0" cy="0" r="150" fill="white" filter="url(#noisyEdgeFilter)"/>
+    </mask>
+  </defs>
+</svg>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursorDot"></div>
+<div id="cursorRing"><span id="cursorLabel"></span></div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="preloader-count"><span id="preloaderPercent">0</span>%</div>
+  <div class="preloader-bar"><div id="preloaderFill"></div></div>
+  <div class="preloader-tag">MEMUAT PORTFOLIO</div>
+</div>
+
+<!-- SCROLL PROGRESS DOTS -->
+<nav id="scrollDots">
+  <button data-target="slide0" data-cursor="01"></button>
+  <button data-target="slide1" data-cursor="02"></button>
+  <button data-target="slide2" data-cursor="03"></button>
+  <button data-target="page4" data-cursor="04"></button>
+</nav>
+
+<!-- PAGE 1 -->
+<section id="page1">
+  <!-- GAMBAR UTAMA (background, selalu tampil penuh) -->
+  <img id="page1BgImg" src="" alt="background halaman 1">
+
+  <!-- GAMBAR KE-2 (overlay, cuma kelihatan di dalam bulatan noise yang
+       mengikuti kursor — mirip efek di Profil 1, tapi TANPA efek 3D) -->
+  <img id="page1OverlayImg" src="" alt="overlay halaman 1">
+
+  <!-- overlay kegelapan: atur lewat variabel --page1-darkness di style.css -->
+  <div id="page1Darken"></div>
+
+  <button id="hiddenCircleBtn" aria-label="secret">
+    <img id="circleImg" src="" alt="">
+  </button>
+
+  <!-- TOMBOL START NOW — 2 PNG: default (bawah) & hover (atas, wipe kiri->kanan) -->
+  <button id="openPortfolioBtn" aria-label="Start Now">
+    <img class="start-btn-img start-btn-default" id="startBtnDefaultImg" src="" alt="Start Now">
+    <img class="start-btn-img start-btn-hover" id="startBtnHoverImg" src="" alt="">
+  </button>
+</section>
+
+<div id="circlePopupOverlay" class="popup-overlay hidden">
+  <div class="circle-popup-inner">
+    <img id="circlePopupImg" src="" alt="ilustrasi">
+    <button id="closeCirclePopup" class="close-x">&times;</button>
+  </div>
+</div>
+
+<div id="pixelTransition"></div>
+
+<!-- TEKS SAAT TRANSISI KLIK START NOW — tampil di atas animasi kotak pixel -->
+<div id="startTransitionText">
+  <span class="start-transition-text">wait a second!</span>
+</div>
+
+<main id="page2">
+  
+  <section class="profile-slide profile-slide--intro" id="slide0" data-index="0">
+    <!-- Tumpukan 3 lapis, semua ikut parallax 3D halus:
+         gambar 1 = background, gambar 2 = orang (langsung tampil),
+         gambar 3 = teks (baru muncul setelah tombol "tap to know me"
+         di bawah diklik & gif transisinya selesai). -->
+    <div class="profile-stack" id="profileStack">
+      <img class="profile-stack-img profile-stack-img-1" id="profileStackImg1" src="" alt="profil 1 background">
+      <img class="profile-stack-img profile-stack-img-2" id="profileStackImg2" src="" alt="profil 1 orang">
+      <img class="profile-stack-img profile-stack-img-3" id="profileStackImg3" src="" alt="profil 1 teks">
+
+      <!-- Tombol "tap to know me" — PNG kamu sendiri (bukan teks lagi) -->
+      <button class="profile-tap-btn" id="profileTapBtn" type="button" aria-label="Tap to know me">
+        <img id="profileTapBtnImg" src="" alt="tap to know me">
+      </button>
+
+      <!-- GIF transisi, main sebentar begitu tombol di atas diklik,
+           lalu gambar 3 (teks) muncul setelah gif ini selesai -->
+      <img class="profile-gif-transition" id="profileGifTransition" src="" alt="">
+    </div>
+
+    <div class="profile-contact">
+      <div class="contact-popup">
+        <a class="contact-icon-btn" href="#" target="_blank" rel="noopener" data-magnetic><img src="" alt="contact 1"></a>
+        <a class="contact-icon-btn" href="#" target="_blank" rel="noopener" data-magnetic><img src="" alt="contact 2"></a>
+        <a class="contact-icon-btn" href="#" target="_blank" rel="noopener" data-magnetic><img src="" alt="contact 3"></a>
+      </div>
+      <button class="contact-toggle-btn" type="button" data-cursor="KONTAK">
+        <img src="" alt="contact me">
+      </button>
+    </div>
+  </section>
+
+  <section class="profile-slide profile-slide--history" id="slide1" data-index="1">
+    <!-- Foto utama (laptop, buku, kamera) + 3 versi lain yang saling
+         gantian tampil saat kursor mengarah ke area masing-masing benda.
+         Semua gambar object-fit:contain (BUKAN cover) supaya TIDAK ke-crop
+         sama sekali, karena kamu sudah samakan ukurannya dengan gambar 1. -->
+    <div class="history-photo-wrap" id="historyPhotoWrap">
+      <img class="history-photo-img" id="historyImgBase" src="" alt="riwayat - laptop, buku, kamera">
+      <img class="history-photo-img" id="historyImgLaptop" src="" alt="riwayat - fokus laptop">
+      <img class="history-photo-img" id="historyImgCamera" src="" alt="riwayat - fokus kamera">
+      <img class="history-photo-img" id="historyImgBook" src="" alt="riwayat - fokus buku">
+
+      <!-- HOTSPOT (area klik tak kasat mata) — geser posisi/ukurannya di
+           style.css kalau belum pas nutupin benda di foto kamu -->
+      <button class="history-hotspot history-hotspot--laptop" id="hotspotLaptop" type="button" aria-label="Pengalaman Kerja"></button>
+      <button class="history-hotspot history-hotspot--book" id="hotspotBook" type="button" aria-label="Riwayat Sekolah"></button>
+      <button class="history-hotspot history-hotspot--camera" id="hotspotCamera" type="button" aria-label="Skills & Software"></button>
+    </div>
+
+    <!-- PANEL KIRI — dipakai gantian: "Pengalaman Kerja" (laptop, bisa
+         di-scroll) & "Riwayat Sekolah" (buku, cuma 4 baris, tidak perlu gede) -->
+    <div class="history-panel history-panel--left" id="panelLeft">
+      <button class="history-panel-close" id="panelLeftClose" aria-label="Tutup">&times;</button>
+      <h3 class="history-panel-title" id="panelLeftTitle">Pengalaman Kerja</h3>
+      <div class="history-panel-body" id="panelLeftBody"></div>
+    </div>
+
+    <!-- PANEL KANAN — "Skills & Software" (kamera), ada 2 sub-tab -->
+    <div class="history-panel history-panel--right" id="panelRight">
+      <button class="history-panel-close" id="panelRightClose" aria-label="Tutup">&times;</button>
+      <div class="history-panel-tabs">
+        <button class="history-tab-btn is-active" id="tabSkillsBtn" type="button">Skills</button>
+        <button class="history-tab-btn" id="tabSoftwareBtn" type="button">Software</button>
+      </div>
+      <div class="history-panel-body" id="panelRightBodySkills"></div>
+      <div class="history-panel-body" id="panelRightBodySoftware" hidden></div>
+    </div>
+  </section>
+
+  <section class="profile-slide" id="slide2" data-index="2">
+    <div class="profile-bg" style="background-image:url('')"></div>
+    <img class="profile-overlay" src="" alt="profil 2">
+    <img class="profile-overlay-alt" src="" alt="profil 2 alternatif">
+  </section>
+  <section id="page4" class="profile-slide">
+    <div id="splitDarken"></div>
+
+    <div class="split-box" id="boxLeft" data-cursor="LIHAT">
+      <div class="split-box-inner">
+        <img class="split-box-bg" src="" alt="graphic design bg">
+        <img class="split-box-bg-hover" src="" alt="graphic design bg hover">
+        <canvas class="split-box-pixel"></canvas>
+        <div class="split-box-label">
+          <span class="split-title">GRAPHIC DESIGNER</span>
+          <span class="split-sub">5-6 Years</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="split-box" id="boxRight" data-cursor="LIHAT">
+      <div class="split-box-inner">
+        <img class="split-box-bg" src="" alt="content creator bg">
+        <img class="split-box-bg-hover" src="" alt="content creator bg hover">
+        <canvas class="split-box-pixel"></canvas>
+        <div class="split-box-label">
+          <span class="split-title">CONTENT CREATOR</span>
+          <span class="split-sub">4-5 Years</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="leftSubpage" class="subpage hidden">
+  <!-- background reveal (gambar beda-beda per kategori), 2 layer buat crossfade halus.
+       Kalau tidak ada teks yang lagi di-hover, otomatis balik ke abu-abu gelap
+       polos (diatur lewat background-color di CSS #leftSubpage). -->
+  <div id="archiveBgA" class="archive-bg-layer"></div>
+  <div id="archiveBgB" class="archive-bg-layer"></div>
+  <div class="archive-darken"></div>
+  <div class="archive-bottom-fade"></div>
+
+  <button class="back-btn" data-cursor="KEMBALI"><img src="" alt="back"></button>
+  <h2 class="subpage-title">Design Archive</h2>
+
+  <!-- Daftar 9 kategori -- klik salah satu buka 1 halaman panjang (bisa
+       diisi banyak gambar), diatur lewat DESIGN_ARCHIVE_CATEGORIES di
+       script.js (cari komentar "GANTI DI SINI"). Kursor datang ke salah
+       satu teks -> background & kotak biru di belakang teks itu muncul,
+       teksnya sendiri TETAP PUTIH. Daftarnya di-scroll di dalam kotaknya
+       sendiri (posisi paling atas TIDAK ikut geser). -->
+  <div class="archive-cat-wrap">
+    <div class="archive-cat-list" id="archiveCatList">
+      <span class="archive-cat-line" data-cat="logo" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Logo Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="brand" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Brand Identity</span>
+      </span>
+      <span class="archive-cat-line" data-cat="poster" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Poster Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="socialmedia" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Social Media Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="carousel" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Carousel Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="advertisement" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Advertisement Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="campaign" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Campaign Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="packaging" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Packaging Design</span>
+      </span>
+      <span class="archive-cat-line" data-cat="digitalimaging" role="button" tabindex="0">
+        <span class="archive-cat-box"></span>
+        <span class="archive-cat-text">Digital Imaging</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section id="rightSubpage" class="subpage hidden">
+  <button class="back-btn" data-cursor="KEMBALI"><img src="" alt="back"></button>
+
+  <h2 class="subpage-title">Content Archive</h2>
+
+  <!-- Daftar 20 brand, tiap baris = 1 tombol persegi panjang penuh lebar.
+       Isinya (gambar 1/gif/gambar 2 overlay per baris) dibuat otomatis
+       oleh JS dari array RIGHT_BRANDS -- cari komentar "GANTI DI SINI"
+       di script.js. -->
+  <div class="content-list" id="contentList"></div>
+</section>
+
+<div id="brandModal" class="popup-overlay hidden">
+  <button id="closeBrandModal" class="close-x" data-cursor="TUTUP">&times;</button>
+  <!-- Isi halaman modal (1 atau lebih, tergantung yang diklik) dibuat
+       otomatis oleh JS lewat openBrandModal() -->
+  <div id="brandModalTrack" class="brand-modal-track"></div>
+</div>
+
+<section id="closing1" class="closing-slide">
+  <div id="closing1Bg" class="closing1-reveal-bg">
+    <!-- Gambar background (kayak referensi kamu - siluet biru jatuh di
+         langit mendung). Ganti linknya lewat CLOSING1_REVEAL_IMG di script.js -->
+    <img class="closing1-reveal-img" id="closing1RevealImg" src="" alt="">
+
+    <!-- 3 baris teks, font Cal Sans. Arahkan kursor ke salah satu baris
+         -> kotak biru bertekstur noise muncul di belakang, teksnya sendiri
+         TETAP PUTIH (tidak ikut berubah warna). -->
+    <div class="closing1-lines">
+      <span class="closing1-line" data-line="howiwork" role="button" tabindex="0">
+        <span class="closing1-line-box"></span>
+        <span class="closing1-line-text">How I Work</span>
+      </span>
+      <span class="closing1-line" data-line="experience" role="button" tabindex="0">
+        <span class="closing1-line-box"></span>
+        <span class="closing1-line-text">Experience / Clients</span>
+      </span>
+      <span class="closing1-line" data-line="services" role="button" tabindex="0">
+        <span class="closing1-line-box"></span>
+        <span class="closing1-line-text">Services &amp; Pricing</span>
+      </span>
+    </div>
+  </div>
+  <button id="closing1RevealBtn" class="closing1-reveal-btn" type="button" aria-label="buka">
+    <img src="" alt="interested">
+  </button>
+</section>
+
+<section id="closing2" class="closing-slide">
+  <h2 class="kinetic-text">Mari berkarya bersama.</h2>
+  <a id="contactLink" href="#" class="contact-btn" data-magnetic data-cursor="KIRIM">Hubungi Saya</a>
+  <p class="footer-note">© <span id="yearNow"></span> — Dibuat dengan niat baik.</p>
+</section>
+
+<!-- ============================================================
+     GERBANG ORIENTASI — cuma tampil di HP yang lagi posisi portrait.
+     Syarat munculnya diatur di style.css (cari "PAKSA MODE HORIZONTAL").
+     Begitu HP diputar ke horizontal, blok ini otomatis hilang.
+     ============================================================ -->
+<div id="rotateGate" role="dialog" aria-modal="true" aria-labelledby="rotateGateTitle" aria-describedby="rotateGateDesc">
+  <svg class="rg-phone" viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">
+    <rect x="31" y="10" width="38" height="80" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+    <line x1="44" y1="19" x2="56" y2="19" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <rect x="37" y="28" width="26" height="52" rx="2" fill="#0042FF"/>
+  </svg>
+  <h2 id="rotateGateTitle">Putar HP kamu ke posisi horizontal</h2>
+  <p id="rotateGateDesc">Portofolio ini dirancang untuk layar lebar. Begitu HP diputar, halaman langsung terbuka.</p>
+  <p class="rg-hint">Layar tidak berputar? Nyalakan auto-rotate di pengaturan HP.</p>
+</div>
